@@ -12,9 +12,12 @@ import com.facebook.ads.NativeAd;
 import com.facebook.ads.NativeAdBase;
 import com.facebook.ads.NativeAdView;
 import com.facebook.ads.NativeAdViewAttributes;
+import com.facebook.ads.NativeBannerAd;
+import com.facebook.ads.NativeBannerAdView;
 import com.mopub.common.Preconditions;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static com.facebook.ads.NativeBannerAdView.Type.HEIGHT_50;
 
 public class FacebookTemplateRenderer implements MoPubAdRenderer<FacebookNative.FacebookNativeAd> {
 
@@ -38,15 +41,18 @@ public class FacebookTemplateRenderer implements MoPubAdRenderer<FacebookNative.
         Preconditions.checkNotNull(ad);
 
         NativeAdBase nativeAdBase = ad.getFacebookNativeAd();
+        View adView = null;
 
         if (nativeAdBase instanceof NativeAd) {
-            View adView = NativeAdView.render(parentView.getContext(), (NativeAd) nativeAdBase,
+            adView = NativeAdView.render(parentView.getContext(), (NativeAd) nativeAdBase,
                     mTemplateAttributes);
-
-            FrameLayout.LayoutParams adViewParams = new FrameLayout.LayoutParams(WRAP_CONTENT,
-                    WRAP_CONTENT);
-            ((FrameLayout) parentView).addView(adView, adViewParams);
+        } else if (nativeAdBase instanceof NativeBannerAd) {
+            adView = NativeBannerAdView.render(parentView.getContext(), (NativeBannerAd) nativeAdBase, HEIGHT_50);
         }
+
+        FrameLayout.LayoutParams adViewParams = new FrameLayout.LayoutParams(WRAP_CONTENT,
+                WRAP_CONTENT);
+        ((FrameLayout) parentView).addView(adView, adViewParams);
     }
 
     @Override
