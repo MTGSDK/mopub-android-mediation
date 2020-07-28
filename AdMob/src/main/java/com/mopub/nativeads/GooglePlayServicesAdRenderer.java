@@ -12,6 +12,7 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.ads.MediaContent;
 import com.google.android.gms.ads.formats.AdChoicesView;
 import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
@@ -191,8 +192,17 @@ public class GooglePlayServicesAdRenderer implements MoPubAdRenderer<GooglePlayS
                 staticNativeViewHolder.mTextView, staticNativeAd.getText());
         unifiedAdView.setBodyView(staticNativeViewHolder.mTextView);
         if (staticNativeViewHolder.mMediaView != null) {
-            MediaView mediaview = new MediaView(unifiedAdView.getContext());
-            staticNativeViewHolder.mMediaView.removeAllViews();
+            final MediaView mediaview = new MediaView(unifiedAdView.getContext());
+
+            final MediaContent mediaContent = staticNativeAd.getUnifiedNativeAd().getMediaContent();
+
+            if (mediaContent.hasVideoContent()) {
+                staticNativeViewHolder.mMediaView.removeAllViews();
+            }
+
+            NativeImageHelper.loadImageView(staticNativeAd.getMainImageUrl(),
+                    staticNativeViewHolder.mMediaView.getMainImageView());
+
             staticNativeViewHolder.mMediaView.addView(mediaview);
             unifiedAdView.setMediaView(mediaview);
 
